@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-
 public class ProdutosDAO {
     
     Connection conn;
@@ -43,12 +42,71 @@ public class ProdutosDAO {
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
+        String sql = "SELECT * FROM produtos";
+        ArrayList<ProdutosDTO> listaProdutos = new ArrayList<>();
         
-        return listagem;
+        try {
+            conectaDAO conecta = new conectaDAO();
+            conn = conecta.connectDB();
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()) {
+                ProdutosDTO produtos = new ProdutosDTO();
+                produtos.setId(rs.getInt("id"));
+                produtos.setNome(rs.getString("nome"));
+                produtos.setValor(rs.getInt("valor"));
+                produtos.setStatus(rs.getString("status"));
+                
+                listaProdutos.add(produtos);
+            }
+            
+            return listaProdutos;
+        } catch (Exception e) {
+            System.out.println("Erro ao listar produtos: " + e.getMessage());
+            return listaProdutos;
+        
+        
+    
+}
+    
+    
+    
     }
     
-    
-    
+    public ArrayList<ProdutosDTO> listagemFiltrada (String nome) {
+        ArrayList<ProdutosDTO> lista = new ArrayList<>();
+        String sql = "SELECT * FROM produtos WHERE 1=1";
         
+        if (nome != null && !nome.trim().isEmpty()) {
+            sql += " AND nome LIKE ?";
+        }
+        
+        try {
+            conectaDAO conecta = new conectaDAO();
+            conn = conecta.connectDB();
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            
+            int index = 1;
+            if (nome != null && !nome.trim().isEmpty()) {
+                stmt.setString(index++, "%" + nome + "%");
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                p.setValor(rs.getInt("valor"));
+                p.setStatus(rs.getString("status"));
+                
+                lista.add(p);            
+            }
+            return lista;
+        } catch (Exception e) {
+            System.out.println("Erro ao filtrar produtos: " + e.getMessage());
+            return lista;
+        }
+    }
 }
 
