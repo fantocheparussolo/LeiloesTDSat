@@ -6,5 +6,7 @@ Esse projeto consiste em um sistema desenvolvido para gerenciamento de uma casa 
 O Objetivo do sistema é auxiliar no cadastro e controle de produtos disponíveis para leilão.
 
 Tecnologias utilizadas:
-- Java
+- Java (NetBeans IDE 26)
 - MySQL
+- Git
+- GitHub Desktop
