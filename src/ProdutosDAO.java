@@ -41,6 +41,24 @@ public class ProdutosDAO {
         }
     }
     
+    public void venderProduto(int id) {
+        String sql = "UPDATE produtos set STATUS = 'Vendido' WHERE id = ?";
+        
+        try {
+            conectaDAO conecta = new conectaDAO();
+            conn = conecta.connectDB();
+            
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            
+            stmt.executeUpdate();
+            stmt.close();
+            
+        } catch (Exception e) {
+            System.out.println("Erro ao vendar produto: " + e.getMessage());
+        }
+    }
+    
     public ArrayList<ProdutosDTO> listarProdutos(){
         String sql = "SELECT * FROM produtos";
         ArrayList<ProdutosDTO> listaProdutos = new ArrayList<>();
@@ -69,9 +87,6 @@ public class ProdutosDAO {
         
     
 }
-    
-    
-    
     }
     
     public ArrayList<ProdutosDTO> listagemFiltrada (String nome) {
@@ -107,6 +122,33 @@ public class ProdutosDAO {
             System.out.println("Erro ao filtrar produtos: " + e.getMessage());
             return lista;
         }
+    }
+    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        ArrayList<ProdutosDTO> lista = new ArrayList<>();
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        
+        try {
+            conectaDAO conecta = new conectaDAO();
+            conn = conecta.connectDB();
+            
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                p.setValor(rs.getInt("valor"));
+                p.setStatus(rs.getString("status"));
+                
+                lista.add(p);
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao listar produtos vendidos: " + e.getMessage());
+        }
+        return lista;
     }
 }
 
